@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     use HasFactory;
+
+    public function reviews() {
+    return $this->hasMany(Review::class);
+}
+
+// Esto es para usar el 'slug' en la URL en lugar del ID
+public function getRouteKeyName() {
+    return 'slug';
+}
 }
