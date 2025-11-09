@@ -3,37 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use Illuminate\Support\Str; // <-- 1. IMPORTANTE: Para generar el slug
-use App\Http\Requests\StoreCourseRequest; // <-- 2. Importa el Form Request
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Http\Requests\StoreCourseRequest;
+use App\Http\Requests\UpdateCourseRequest;
 
 class CourseController extends Controller
 {
-    /**
-     * Muestra el formulario para crear un nuevo curso.
-     */
-    public function create()
+    public function index()
     {
-        return view('courses.create'); // 3. Le decimos que muestre la vista
+        $courses = Course::latest()->get(); 
+        return view('courses.index', ['courses' => $courses]);
     }
 
-    /**
-     * Guarda el nuevo curso en la base de datos.
-     */
+    public function create()
+    {
+        return view('courses.create');
+    }
+
     public function store(StoreCourseRequest $request)
     {
-        // 4. Laravel ya validó los datos gracias a StoreCourseRequest
-
-        // 5. Creamos el curso
         Course::create([
             'title' => $request->title,
-            'slug' => Str::slug($request->title), // 6. Genera un slug amigable (ej: "hola-mundo")
+            'slug' => Str::slug($request->title),
+            'description' => $request->description,
+            'instructor' => $request->instructor,
+        ]);
+        return redirect()->route('courses.index')->with('success', 'Curso creado exitosamente.');
+    }
+
+    public function edit(Course $course)
+    {
+        return view('courses.edit', ['course' => $course]);
+    }
+
+    public function update(UpdateCourseRequest $request, Course $course)
+    {
+        $course->update([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
             'description' => $request->description,
             'instructor' => $request->instructor,
         ]);
 
-        // 7. Redirigimos (usaremos 'dashboard' por ahora)
-        return redirect()->route('dashboard')->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('courses.index')->with('success', 'Curso actualizado exitosamente.');
     }
 
-    // ... (Los otros métodos como edit, update, destroy están vacíos por ahora)
+    /**
+     * Elimina el curso de la base de datos.
+     */
+    public function destroy(Course $course)
+    {
+        // Laravel encuentra el curso automáticamente
+        $course->delete();
+
+        return redirect()->route('courses.index')->with('success', 'Curso eliminado exitosamente.');
+    }
 }

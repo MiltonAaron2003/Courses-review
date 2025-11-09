@@ -9,12 +9,30 @@ class Course extends Model
 {
     use HasFactory;
 
-    public function reviews() {
-    return $this->hasMany(Review::class);
-}
+    /**
+     * Los atributos que se pueden asignar en masa.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'slug',
+        'description',
+        'instructor',
+    ];
 
-// Esto es para usar el 'slug' en la URL en lugar del ID
-public function getRouteKeyName() {
-    return 'slug';
-}
+    /**
+     * Un curso tiene muchas reseñas (reviews).
+     */
+    public function reviews() {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Le dice a Laravel que use el 'slug' para encontrar el curso en la URL,
+     * en lugar de usar el 'id'.
+     */
+    public function getRouteKeyName() {
+        return 'slug';
+    }
 }

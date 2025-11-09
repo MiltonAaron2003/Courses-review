@@ -11,7 +11,6 @@ class StoreCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Cambiamos esto a true para que cualquier usuario logueado pueda intentarlo
         return true;
     }
 
@@ -22,12 +21,11 @@ class StoreCourseRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Aquí definimos las reglas basadas en la migración
         return [
-            'title' => 'required|string|max:255',
+            // AÑADIMOS LA REGLA: 'unique:courses'
+            'title' => 'required|string|max:255|unique:courses',
             'description' => 'required|string',
             'instructor' => 'required|string|max:255',
-            // 'slug' lo generaremos automáticamente
         ];
     }
 }

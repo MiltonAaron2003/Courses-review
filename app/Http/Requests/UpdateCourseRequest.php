@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule; // <-- 1. Importa la clase Rule
+use Illuminate\Validation\Rule;
 
 class UpdateCourseRequest extends FormRequest
 {
@@ -23,7 +23,6 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 2. Esta regla ignora el título actual al verificar si es único
             'title' => [
                 'required',
                 'string',
