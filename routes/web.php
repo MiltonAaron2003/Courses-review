@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CourseController; // <-- Asegúrate de que esto esté importado
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\PublicCourseController; // <-- Importamos el nuevo controlador
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -10,10 +11,11 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// --- RUTAS PÚBLICAS (Accesibles para todos) ---
+// Página de inicio (Listado de cursos) [cite: 111]
+Route::get('/', [PublicCourseController::class, 'index'])->name('home');
 
+// --- RUTAS PROTEGIDAS (Requieren inicio de sesión) ---
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -24,8 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Rutas para administrar cursos (CRUD)
-    // Ya no excluimos 'index', solo 'show'
-    Route::resource('courses', CourseController::class)->except(['show']);
+    // Solo usuarios autenticados pueden crear, editar, borrar
+    Route::resource('courses', CourseController::class)->except(['index', 'show']);
 });
 
 require __DIR__.'/auth.php';
