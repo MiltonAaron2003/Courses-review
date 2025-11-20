@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PublicCourseController;
+use App\Http\Controllers\ReviewController; // <-- Importamos el nuevo controlador
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 
 // --- RUTAS PÚBLICAS ---
 Route::get('/', [PublicCourseController::class, 'index'])->name('home');
-// Nueva ruta para el detalle del curso
 Route::get('/curso/{course}', [PublicCourseController::class, 'show'])->name('courses.show');
 
 // --- RUTAS PROTEGIDAS ---
@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
 
     // Rutas para administrar cursos (CRUD)
     Route::resource('courses', CourseController::class)->except(['index', 'show']);
+
+    // Ruta para guardar reseñas [cite: 144-145]
+    Route::post('/curso/{course}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
 require __DIR__.'/auth.php';

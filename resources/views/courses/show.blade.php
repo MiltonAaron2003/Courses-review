@@ -24,6 +24,12 @@
     </nav>
 
     <main class="max-w-4xl mx-auto py-10 px-6">
+        @if(session('success'))
+            <div class="mb-8 p-4 bg-green-100 text-green-700 border-l-4 border-green-500 rounded shadow-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="bg-white overflow-hidden shadow-lg rounded-lg mb-10">
             <div class="p-8">
                 <h1 class="text-4xl font-extrabold text-gray-900 mb-4">{{ $course->title }}</h1>
@@ -38,6 +44,42 @@
                     <p>{{ $course->description }}</p>
                 </div>
             </div>
+        </div>
+
+        <div class="mb-10 bg-gray-50 p-6 rounded-lg border border-gray-200">
+            @auth
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Deja tu reseña</h3>
+                <form action="{{ route('reviews.store', $course->slug) }}" method="POST">
+                    @csrf
+                    
+                    <div class="mb-4">
+                        <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">Calificación (1-5)</label>
+                        <select name="rating" id="rating" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="5">⭐⭐⭐⭐⭐ (5 - Excelente)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 - Muy bueno)</option>
+                            <option value="3">⭐⭐⭐ (3 - Bueno)</option>
+                            <option value="2">⭐⭐ (2 - Regular)</option>
+                            <option value="1">⭐ (1 - Malo)</option>
+                        </select>
+                        @error('rating') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
+                        <textarea name="comment" id="comment" rows="3" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Comparte tu experiencia..."></textarea>
+                        @error('comment') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        Enviar Reseña
+                    </button>
+                </form>
+            @else
+                <div class="text-center">
+                    <p class="text-gray-600 mb-3">¿Quieres dejar tu opinión sobre este curso?</p>
+                    <a href="{{ route('login') }}" class="text-indigo-600 font-bold hover:underline">Inicia sesión para dejar una reseña</a>
+                </div>
+            @endauth
         </div>
 
         <div class="mb-8">
