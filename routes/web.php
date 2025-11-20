@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\PublicCourseController; // <-- Importamos el nuevo controlador
+use App\Http\Controllers\PublicCourseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// --- RUTAS PÚBLICAS (Accesibles para todos) ---
-// Página de inicio (Listado de cursos) [cite: 111]
+// --- RUTAS PÚBLICAS ---
 Route::get('/', [PublicCourseController::class, 'index'])->name('home');
+// Nueva ruta para el detalle del curso
+Route::get('/curso/{course}', [PublicCourseController::class, 'show'])->name('courses.show');
 
-// --- RUTAS PROTEGIDAS (Requieren inicio de sesión) ---
+// --- RUTAS PROTEGIDAS ---
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -26,7 +27,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Rutas para administrar cursos (CRUD)
-    // Solo usuarios autenticados pueden crear, editar, borrar
     Route::resource('courses', CourseController::class)->except(['index', 'show']);
 });
 

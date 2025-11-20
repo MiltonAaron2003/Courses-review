@@ -7,26 +7,19 @@ use Illuminate\Http\Request;
 
 class PublicCourseController extends Controller
 {
-    /**
-     * Muestra la lista de cursos en la página de inicio.
-     */
     public function index()
     {
-        // Obtenemos los cursos ordenados por el más reciente, paginados de 10 en 10
-        // Esto cumple con el requisito del PDF de paginación [cite: 119]
+        // Paginación de 10 cursos para la portada
         $courses = Course::latest()->paginate(10);
-
-        // Renderizamos la vista 'home' y le pasamos los datos
         return view('home', ['courses' => $courses]);
     }
 
-    /**
-     * Muestra el detalle de un curso específico.
-     * (Este método lo usaremos en el siguiente paso, pero lo dejamos preparado)
-     */
     public function show(Course $course)
     {
-        // Aquí cargaremos las relaciones más adelante
+        // REQUISITO CRÍTICO DEL PDF: Eager Loading
+        // Cargamos las reseñas Y los autores de esas reseñas para evitar el problema N+1
+        $course->load('reviews.user');
+
         return view('courses.show', ['course' => $course]);
     }
 }

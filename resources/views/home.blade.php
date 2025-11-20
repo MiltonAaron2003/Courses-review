@@ -9,23 +9,22 @@
 <body class="bg-gray-100 font-sans antialiased">
     <div class="min-h-screen">
         
-        <nav class="bg-white border-b border-gray-100 shadow-sm">
+        <nav class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">
+                        <a href="{{ route('home') }}" class="text-2xl font-bold text-indigo-600 tracking-tight">
                             Course Review
                         </a>
                     </div>
-
                     <div class="flex items-center space-x-4">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 underline hover:text-indigo-500">Dashboard</a>
+                                <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" class="text-sm text-gray-700 underline hover:text-indigo-500">Iniciar Sesión</a>
+                                <a href="{{ route('login') }}" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">Iniciar Sesión</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline hover:text-indigo-500">Registrarse</a>
+                                    <a href="{{ route('register') }}" class="ml-4 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition">Registrarse</a>
                                 @endif
                             @endauth
                         @endif
@@ -34,45 +33,48 @@
             </div>
         </nav>
 
-        <main class="max-w-7xl mx-auto py-12 px-6">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-extrabold text-gray-900">Explora nuestros cursos</h1>
-                <p class="mt-4 text-lg text-gray-500">Descubre contenido creado por expertos y deja tu reseña.</p>
+        <div class="bg-indigo-600 text-white py-16">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Aprende y Comparte</h1>
+                <p class="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto">Descubre los mejores cursos calificados por la comunidad y comparte tu experiencia de aprendizaje.</p>
             </div>
+        </div>
+
+        <main class="max-w-7xl mx-auto py-12 px-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-8 border-l-4 border-indigo-500 pl-4">Últimos Cursos Agregados</h2>
 
             @if($courses->isEmpty())
-                <div class="text-center text-gray-500 p-10">
-                    <p>Aún no hay cursos disponibles.</p>
+                <div class="text-center py-20 bg-white rounded-lg shadow-sm">
+                    <p class="text-gray-500 text-lg">Aún no hay cursos disponibles en la plataforma.</p>
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach ($courses as $course)
-                        <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
-                            <div class="p-6">
-                                <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $course->title }}</h2>
-                                <p class="text-sm text-indigo-600 font-medium mb-4">Instructor: {{ $course->instructor }}</p>
-                                <p class="text-gray-600 mb-4 line-clamp-3">
+                        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-gray-100 overflow-hidden group">
+                            <div class="p-6 flex-grow">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="bg-indigo-50 text-indigo-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Curso</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">{{ $course->title }}</h3>
+                                <p class="text-sm text-gray-500 mb-4 font-medium">Por: {{ $course->instructor }}</p>
+                                <p class="text-gray-600 text-sm line-clamp-3 mb-4">
                                     {{ Str::limit($course->description, 120) }}
                                 </p>
-                                <div class="mt-4 border-t pt-4">
-                                    <span class="text-gray-400 text-sm cursor-not-allowed">Ver detalles (Próximamente)</span>
-                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                                <a href="{{ route('courses.show', $course->slug) }}" class="block w-full text-center text-indigo-600 font-semibold hover:text-indigo-800 transition-colors">
+                                    Ver detalles y reseñas &rarr;
+                                </a>
                             </div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="mt-10">
+                <div class="mt-12">
                     {{ $courses->links() }}
                 </div>
             @endif
         </main>
-
-        <footer class="bg-white border-t border-gray-200 mt-12">
-            <div class="max-w-7xl mx-auto py-6 px-4 text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} Course Review Platform. Todos los derechos reservados.
-            </div>
-        </footer>
     </div>
 </body>
 </html>
